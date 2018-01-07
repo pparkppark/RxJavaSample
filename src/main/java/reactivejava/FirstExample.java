@@ -15,6 +15,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.AsyncSubject;
 
 public class FirstExample {
 
@@ -24,7 +25,7 @@ public class FirstExample {
 //		.subscribe(System.out::println);
 	}
 	
-	public void code_2_3() {
+	private void code_2_3() {
 		Observable<Integer> source = Observable.create(
 				(ObservableEmitter<Integer> emitter) -> {
 					emitter.onNext(100);
@@ -36,7 +37,7 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_4() {
+	private void code_2_4() {
 		Observable<Integer> source = Observable.create(
 				(ObservableEmitter<Integer> emitter) -> {
 					emitter.onNext(100);
@@ -46,7 +47,7 @@ public class FirstExample {
 				});
 	}
 	
-	public void code_2_5() {
+	private void code_2_5() {
 		Observable<Integer> source = Observable.create(
 				(ObservableEmitter<Integer> emitter) -> {
 					emitter.onNext(100);
@@ -57,7 +58,7 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_6() {
+	private void code_2_6() {
 		Observable<Integer> source = Observable.create(
 				(ObservableEmitter<Integer> emitter) -> {
 					emitter.onNext(100);
@@ -74,25 +75,25 @@ public class FirstExample {
 		});
 	}
 	
-	public void code_2_7() {
+	private void code_2_7() {
 		Integer[] arr = {100, 200, 300};
 		Observable<Integer> source = Observable.fromArray(arr);
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_8() {
+	private void code_2_8() {
 		int[] arr = {100, 200, 300};
 		Observable source = Observable.fromArray(arr);
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_9() {
+	private void code_2_9() {
 		int[] arr = {100, 200, 300};
 		Observable<Integer> source = Observable.fromArray(toIntegerArray(arr));
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_10() {
+	private void code_2_10() {
 		ArrayList<String> names = new ArrayList<>();
 		names.add("Jerry");
 		names.add("William");
@@ -102,7 +103,7 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_11() {
+	private void code_2_11() {
 		HashSet<String> cities = new HashSet<>();
 		cities.add("Seoul");
 		cities.add("London");
@@ -112,7 +113,7 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_12() {
+	private void code_2_12() {
 		ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(100);
 		orderQueue.add(new Order("ORD-1"));
 		orderQueue.add(new Order("ORD-2"));
@@ -122,7 +123,7 @@ public class FirstExample {
 		source.subscribe(order -> System.out.println(order.getId()));
 	}
 	
-	public void code_2_14() {
+	private void code_2_14() {
 		Callable<String> callable = () -> {
 			System.out.println("Ready...");
 			Thread.sleep(1000);
@@ -133,7 +134,7 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_16() {
+	private void code_2_16() {
 		Future<String> future = Executors.newSingleThreadExecutor().submit(() -> {
 			System.out.println("Ready...");
 			Thread.sleep(1000);
@@ -144,7 +145,7 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_17() {
+	private void code_2_17() {
 		Publisher<String> publisher = (Subscriber<? super String> s) -> {
 			s.onNext("Hello, Obserable.fromPublisher()");
 			s.onComplete();
@@ -154,12 +155,12 @@ public class FirstExample {
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_19() {
+	private void code_2_19() {
 		Single<String> source = Single.just("Hello Single");
 		source.subscribe(System.out::println);
 	}
 	
-	public void code_2_20() {
+	private void code_2_20() {
 		Observable<String> source = Observable.just("Hello Single");
 		Single.fromObservable(source)
 		.subscribe(System.out::println);
@@ -183,6 +184,31 @@ public class FirstExample {
 		.subscribe(System.out::println);
 	}
 	
+	private void code_2_22() {
+		Single<String> source = Observable.just("Hello Single", "Error").single("default item");
+		source.subscribe(System.out::println);
+	}
+	
+	private void code_2_23() {
+		AsyncSubject<String> subject = AsyncSubject.create();
+		subject.subscribe(data -> System.out.println("Subscriber 1 :: " + data));
+		subject.onNext("1");
+		subject.onNext("3");
+		subject.subscribe(data -> System.out.println("Subscriber 2 :: " + data));
+		subject.onNext("5");
+		subject.onComplete();
+	}
+	
+	private void code_2_24() {
+		Float[] temperature = {10.1f, 13.4f, 12.5f};
+		Observable<Float> source = Observable.fromArray(temperature);
+		
+		AsyncSubject<Float> subject = AsyncSubject.create();
+		subject.subscribe(data -> System.out.println("Subscriber 1 :: " + data));
+		
+		source.subscribe(subject);
+	}
+	
 	public static Integer[] toIntegerArray(int[] intArray) {
 		return IntStream.of(intArray).boxed().toArray(Integer[]::new);
 	}
@@ -204,7 +230,11 @@ public class FirstExample {
 //		exam.code_2_16();
 //		exam.code_2_17();
 //		exam.code_2_19();
-		exam.code_2_20();
+//		exam.code_2_20();
+//		exam.code_2_22();
+//		exam.code_2_23();
+		exam.code_2_24();
+		
 	}
 	
 }
